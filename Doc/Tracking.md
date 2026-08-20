@@ -137,6 +137,8 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Verificati ESLint e build dopo le modifiche con esito positivo; Prisma Client, compilazione Next.js e TypeScript completati senza errori.
 - Corretto il modulo appuntamenti: dopo il warning di sovrapposizione paziente, giorno, orario e tipo restano valorizzati per la conferma successiva.
 - Verificati ESLint e build dopo la correzione del modulo con esito positivo.
+- Corretto anche il reset della select paziente dopo il warning: il modulo appuntamenti usa ora `onSubmit` con `preventDefault` invece della form action automatica.
+- Verificati nuovamente ESLint e build dopo la correzione con esito positivo.
 
 ## Stato attuale
 
