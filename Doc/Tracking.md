@@ -161,6 +161,8 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Aggiunta icona compatta per la modalità appuntamento: `⌖` per In presenza e `▣` per Online.
 - Mostrata l'icona con etichetta testuale e tooltip sia nella Panoramica sia nel Calendario, senza affidarsi solo al colore.
 - Verificati ESLint e build dopo le icone modalità con esito positivo.
+- Sostituite le icone simboliche con icone Lucide piu chiare: edificio per In presenza e computer per Online.
+- Aggiunta la dipendenza `lucide-react`; verificati nuovamente ESLint e build con esito positivo.
 
 ## Stato attuale
 

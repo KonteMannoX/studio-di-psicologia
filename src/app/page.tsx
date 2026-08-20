@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Building2, Monitor } from "lucide-react";
 import { normalizeEmail, normalizePersonName } from "@/lib/text";
 
 type Appointment = {
@@ -20,7 +21,8 @@ function normalizeModality(value?: string): Appointment["modality"] {
 
 function ModalityBadge({ modality }: { modality: Appointment["modality"] }) {
   const isOnline = modality === "Online";
-  return <span className={`modality-badge ${isOnline ? "online" : "in-person"}`} title={modality} aria-label={modality}><span aria-hidden="true">{isOnline ? "▣" : "⌖"}</span>{modality}</span>;
+  const Icon = isOnline ? Monitor : Building2;
+  return <span className={`modality-badge ${isOnline ? "online" : "in-person"}`} title={modality} aria-label={modality}><Icon aria-hidden="true" size={14} strokeWidth={1.8} />{modality}</span>;
 }
 
 type AppointmentDraft = {
