@@ -144,6 +144,9 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Verificati ESLint e build dopo la normalizzazione email con esito positivo.
 - Test desktop completato dall'utente: gestione pazienti, appuntamenti e normalizzazione email risultano corrette.
 - Prossimo test: verificare l'app dal link Vercel su Android e iOS, inclusi login, inserimento/modifica pazienti, calendario, sovrapposizioni e usabilita su schermo piccolo.
+- Aggiornata la schermata di login: sostituito il marchio "Studio calma" con "Studio di Psicologia".
+- Sostituito l'avviso "Prototipo locale" con un promemoria per usare solo dati fittizi fino al completamento della configurazione di sicurezza.
+- Verificati ESLint e build dopo l'aggiornamento del login con esito positivo.
 
 ## Stato attuale
 
