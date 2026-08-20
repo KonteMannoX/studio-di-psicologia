@@ -9,22 +9,28 @@ type Appointment = {
   time: string;
   name: string;
   type: string;
+  modality: "In presenza" | "Online";
   color: string;
   status: string;
 };
+
+function normalizeModality(value?: string): Appointment["modality"] {
+  return value === "Online" ? "Online" : "In presenza";
+}
 
 type AppointmentDraft = {
   day: string;
   patient: string;
   time: string;
   type: string;
+  modality: "In presenza" | "Online";
 };
 
 const initialAppointments: Appointment[] = [
-  { id: "a-1", day: "20", time: "09:30", name: "Sofia Bianchi", type: "Colloquio individuale", color: "mint", status: "Confermato" },
-  { id: "a-2", day: "20", time: "11:00", name: "Marco Rinaldi", type: "Prima consultazione", color: "coral", status: "Da confermare" },
-  { id: "a-3", day: "20", time: "15:30", name: "Elena Conti", type: "Colloquio individuale", color: "blue", status: "Confermato" },
-  { id: "a-4", day: "20", time: "17:00", name: "Luca Ferri", type: "Follow-up", color: "amber", status: "Confermato" },
+  { id: "a-1", day: "20", time: "09:30", name: "Sofia Bianchi", type: "Colloquio individuale", modality: "In presenza", color: "mint", status: "Confermato" },
+  { id: "a-2", day: "20", time: "11:00", name: "Marco Rinaldi", type: "Prima consultazione", modality: "Online", color: "coral", status: "Da confermare" },
+  { id: "a-3", day: "20", time: "15:30", name: "Elena Conti", type: "Colloquio individuale", modality: "In presenza", color: "blue", status: "Confermato" },
+  { id: "a-4", day: "20", time: "17:00", name: "Luca Ferri", type: "Follow-up", modality: "Online", color: "amber", status: "Confermato" },
 ];
 
 type Patient = {
@@ -81,7 +87,7 @@ function CalendarView({ appointments, selectedDay, onDayChange, onNew, onEdit, o
   const days = [{ day: "18", label: "MER" }, { day: "19", label: "GIO" }, { day: "20", label: "VEN" }, { day: "21", label: "SAB" }, { day: "22", label: "DOM" }];
   const visibleAppointments = appointments.filter((appointment) => appointment.day === selectedDay).sort((first, second) => first.time.localeCompare(second.time));
 
-  return <section className="calendar-page"><div className="welcome-row"><div><p className="eyebrow">CALENDARIO</p><h1>Agenda dello studio</h1><p className="intro">Visualizza e gestisci gli appuntamenti della settimana.</p></div><button className="primary-button" onClick={onNew}>+ <span>Nuovo appuntamento</span></button></div><div className="panel calendar-panel"><div className="panel-heading"><div><p className="eyebrow">SETTIMANA</p><h2>Giugno 2025</h2></div><strong className="calendar-count">{visibleAppointments.length} appuntamenti</strong></div><div className="date-strip">{days.map((date) => <button className={selectedDay === date.day ? "selected" : ""} onClick={() => onDayChange(date.day)} key={date.day}><b>{date.label}</b><strong>{date.day}</strong></button>)}</div><div className="appointment-list">{visibleAppointments.map((appointment) => <div className="appointment" key={appointment.id}><time>{appointment.time}</time><span className={`appointment-line ${appointment.color}`} /><div className="appointment-details"><strong>{appointment.name}</strong><span>{appointment.type}</span></div><span className={`status ${appointment.status === "Confermato" ? "confirmed" : "pending"}`}>{appointment.status}</span><button className="more-button" aria-label={`Modifica ${appointment.name}`} onClick={() => onEdit(appointment)}>•••</button><button className="delete-appointment" aria-label={`Cancella appuntamento di ${appointment.name}`} onClick={() => onDelete(appointment)}>×</button></div>)}</div>{visibleAppointments.length === 0 && <p className="empty-state">Nessun appuntamento per questo giorno.</p>}</div></section>;
+  return <section className="calendar-page"><div className="welcome-row"><div><p className="eyebrow">CALENDARIO</p><h1>Agenda dello studio</h1><p className="intro">Visualizza e gestisci gli appuntamenti della settimana.</p></div><button className="primary-button" onClick={onNew}>+ <span>Nuovo appuntamento</span></button></div><div className="panel calendar-panel"><div className="panel-heading"><div><p className="eyebrow">SETTIMANA</p><h2>Giugno 2025</h2></div><strong className="calendar-count">{visibleAppointments.length} appuntamenti</strong></div><div className="date-strip">{days.map((date) => <button className={selectedDay === date.day ? "selected" : ""} onClick={() => onDayChange(date.day)} key={date.day}><b>{date.label}</b><strong>{date.day}</strong></button>)}</div><div className="appointment-list">{visibleAppointments.map((appointment) => <div className="appointment" key={appointment.id}><time>{appointment.time}</time><span className={`appointment-line ${appointment.color}`} /><div className="appointment-details"><strong>{appointment.name}</strong><span>{appointment.type} · {appointment.modality}</span></div><span className={`status ${appointment.status === "Confermato" ? "confirmed" : "pending"}`}>{appointment.status}</span><button className="more-button" aria-label={`Modifica ${appointment.name}`} onClick={() => onEdit(appointment)}>•••</button><button className="delete-appointment" aria-label={`Cancella appuntamento di ${appointment.name}`} onClick={() => onDelete(appointment)}>×</button></div>)}</div>{visibleAppointments.length === 0 && <p className="empty-state">Nessun appuntamento per questo giorno.</p>}</div></section>;
 }
 
 export default function Home() {
@@ -99,11 +105,13 @@ export default function Home() {
   const [formError, setFormError] = useState("");
   const [appointmentError, setAppointmentError] = useState("");
   const [allowAppointmentOverlap, setAllowAppointmentOverlap] = useState(false);
-  const [appointmentDraft, setAppointmentDraft] = useState<AppointmentDraft>({ day: "20", patient: "", time: "", type: "Colloquio individuale" });
+  const [appointmentDraft, setAppointmentDraft] = useState<AppointmentDraft>({ day: "20", patient: "", time: "", type: "Colloquio individuale", modality: "In presenza" });
   const [apiAvailable, setApiAvailable] = useState(false);
   const visibleAppointments = appointmentList
     .filter((appointment) => appointment.day === selectedDay)
     .sort((first, second) => first.time.localeCompare(second.time));
+  const inPersonCount = visibleAppointments.filter((appointment) => appointment.modality === "In presenza").length;
+  const onlineCount = visibleAppointments.filter((appointment) => appointment.modality === "Online").length;
 
   useEffect(() => {
     fetch("/api/auth/me").then((response) => setAuthStatus(response.ok ? "authenticated" : "unauthenticated")).catch(() => setAuthStatus("unauthenticated"));
@@ -121,6 +129,7 @@ export default function Home() {
       window.localStorage.removeItem("studio-calma-patients");
       window.localStorage.removeItem("studio-calma-appointments");
     }
+    localAppointments = localAppointments.map((appointment) => ({ ...appointment, modality: normalizeModality(appointment.modality) }));
     async function loadFromApi() {
       const patientResponse = await fetch("/api/patients");
       if (!patientResponse.ok) throw new Error("API pazienti non disponibile");
@@ -149,13 +158,13 @@ export default function Home() {
       setPatientList(mappedPatients);
       const appointmentResponse = await fetch("/api/appointments");
       if (!appointmentResponse.ok) throw new Error("API appuntamenti non disponibile");
-      let serverAppointments = await appointmentResponse.json() as Appointment[];
+      let serverAppointments = (await appointmentResponse.json() as Appointment[]).map((appointment) => ({ ...appointment, modality: normalizeModality(appointment.modality) }));
       if (serverAppointments.length === 0 && localAppointments.length > 0) {
         serverAppointments = (await Promise.all(localAppointments.map(async (appointment) => {
           const response = await fetch("/api/appointments", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ day: appointment.day, time: appointment.time, patient: appointment.name, type: appointment.type }),
+            body: JSON.stringify({ day: appointment.day, time: appointment.time, patient: appointment.name, type: appointment.type, modality: appointment.modality }),
           });
           return response.ok ? response.json() : null;
         }))).filter(Boolean) as Appointment[];
@@ -243,7 +252,7 @@ export default function Home() {
     setEditingAppointment(null);
     setAppointmentError("");
     setAllowAppointmentOverlap(false);
-    setAppointmentDraft({ day: selectedDay, patient: "", time: "", type: "Colloquio individuale" });
+    setAppointmentDraft({ day: selectedDay, patient: "", time: "", type: "Colloquio individuale", modality: "In presenza" });
     setAppointmentFormOpen(true);
   }
 
@@ -251,7 +260,7 @@ export default function Home() {
     setEditingAppointment(appointment);
     setAppointmentError("");
     setAllowAppointmentOverlap(false);
-    setAppointmentDraft({ day: appointment.day, patient: appointment.name, time: appointment.time, type: appointment.type });
+    setAppointmentDraft({ day: appointment.day, patient: appointment.name, time: appointment.time, type: appointment.type, modality: appointment.modality });
     setAppointmentFormOpen(true);
   }
 
@@ -268,6 +277,7 @@ export default function Home() {
       time,
       name: patientName,
       type: appointmentDraft.type || String(formData.get("type") || "Colloquio individuale"),
+      modality: appointmentDraft.modality,
       color: editingAppointment?.color ?? "amber",
       status: editingAppointment?.status ?? "Da confermare",
     };
@@ -280,7 +290,7 @@ export default function Home() {
       const response = await fetch(editingAppointment ? `/api/appointments/${editingAppointment.id}` : "/api/appointments", {
         method: editingAppointment ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ day: updatedAppointment.day, time: updatedAppointment.time, patient: updatedAppointment.name, type: updatedAppointment.type, allowOverlap: allowAppointmentOverlap }),
+        body: JSON.stringify({ day: updatedAppointment.day, time: updatedAppointment.time, patient: updatedAppointment.name, type: updatedAppointment.type, modality: updatedAppointment.modality, allowOverlap: allowAppointmentOverlap }),
       });
       if (!response.ok) {
         setAppointmentError(response.status === 409 ? "Esiste gia un appuntamento a questo orario. Verifica la sovrapposizione oppure confermala." : "Impossibile salvare l'appuntamento.");
@@ -296,7 +306,7 @@ export default function Home() {
     setAllowAppointmentOverlap(false);
     setAppointmentFormOpen(false);
     setEditingAppointment(null);
-    setAppointmentDraft({ day: selectedDay, patient: "", time: "", type: "Colloquio individuale" });
+    setAppointmentDraft({ day: selectedDay, patient: "", time: "", type: "Colloquio individuale", modality: "In presenza" });
   }
 
   async function removeAppointment(appointment: Appointment) {
@@ -337,7 +347,7 @@ export default function Home() {
         <div className="content-wrap">
           {activeSection === "Calendario" ? <CalendarView appointments={appointmentList} selectedDay={selectedDay} onDayChange={setSelectedDay} onNew={openAppointmentForm} onEdit={editAppointment} onDelete={removeAppointment} /> : <>
           <section className="welcome-row"><div><p className="eyebrow">MERCOLEDI, 18 GIUGNO 2025</p><h1>Buongiorno, Martina <span>✦</span></h1><p className="intro">Ecco cosa succede oggi nel tuo studio.</p></div><button className="primary-button" onClick={openAppointmentForm}>+ <span>Nuovo appuntamento</span></button></section>
-          <section className="stats-grid"><div className="stat-card stat-today"><div className="stat-label">APPUNTAMENTI OGGI <span>→</span></div><strong>{visibleAppointments.length}</strong><p>2 in presenza <span>·</span> 2 online</p><div className="mini-bars"><i /><i /><i /><i /><i /><i /><i /></div></div><div className="stat-card"><div className="stat-label">PAZIENTI ATTIVI <span>→</span></div><strong>{patientList.length}</strong><p><b className="positive">+3</b> questo mese</p><div className="sparkline">╱╲╱╲╱╱╲╱</div></div><div className="stat-card"><div className="stat-label">PROMEMORIA INVIATI <span>→</span></div><strong>12</strong><p>Questa settimana</p><div className="delivery"><b>98%</b><span>consegnati</span></div></div></section>
+          <section className="stats-grid"><div className="stat-card stat-today"><div className="stat-label">APPUNTAMENTI OGGI <span>→</span></div><strong>{visibleAppointments.length}</strong><p>{inPersonCount} in presenza <span>·</span> {onlineCount} online</p><div className="mini-bars"><i /><i /><i /><i /><i /><i /><i /></div></div><div className="stat-card"><div className="stat-label">PAZIENTI ATTIVI <span>→</span></div><strong>{patientList.length}</strong><p><b className="positive">+3</b> questo mese</p><div className="sparkline">╱╲╱╲╱╱╲╱</div></div><div className="stat-card"><div className="stat-label">PROMEMORIA INVIATI <span>→</span></div><strong>12</strong><p>Questa settimana</p><div className="delivery"><b>98%</b><span>consegnati</span></div></div></section>
           <section className="dashboard-grid"><div className="panel agenda-panel"><div className="panel-heading"><div><p className="eyebrow">AGENDA</p><h2>Gli appuntamenti del giorno</h2></div><button className="text-button" onClick={openAppointmentForm}>Nuovo <span>+</span></button></div><div className="date-strip"><button aria-label="Giorno precedente">‹</button>{[{ day: "18", label: "MER" }, { day: "19", label: "GIO" }, { day: "20", label: "VEN" }, { day: "21", label: "SAB" }, { day: "22", label: "DOM" }].map((date) => <button className={selectedDay === date.day ? "selected" : ""} onClick={() => setSelectedDay(date.day)} key={date.day}><b>{date.label}</b><strong>{date.day}</strong></button>)}<button aria-label="Giorno successivo">›</button></div><div className="appointment-list">{visibleAppointments.map((appointment) => <div className="appointment" key={appointment.id}><time>{appointment.time}</time><span className={`appointment-line ${appointment.color}`} /><div className="appointment-details"><strong>{appointment.name}</strong><span>{appointment.type}</span></div><span className={`status ${appointment.status === "Confermato" ? "confirmed" : "pending"}`}>{appointment.status}</span><button className="more-button" aria-label={`Modifica ${appointment.name}`} onClick={() => editAppointment(appointment)}>•••</button><button className="delete-appointment" aria-label={`Cancella appuntamento di ${appointment.name}`} onClick={() => removeAppointment(appointment)}>×</button></div>)}</div>{visibleAppointments.length === 0 && <p className="empty-state">Nessun appuntamento per questo giorno.</p>}</div>
             <div className="side-stack"><div className="panel patients-panel"><div className="panel-heading"><div><p className="eyebrow">PAZIENTI RECENTI</p><h2>Contatti rapidi</h2></div><button className="round-add" aria-label="Aggiungi paziente" onClick={() => openPatientForm()}>+</button></div><div className="patient-list">{patientList.slice(0, 3).map((patient) => <div className="patient" key={patient.id}><span className={`avatar avatar-${patient.color}`}>{patient.initials}</span><div><strong>{patient.name}</strong><span>{patient.detail}</span></div><button className="more-button" aria-label={`Modifica ${patient.name}`} onClick={() => openPatientForm(patient)}>•••</button><button className="delete-patient" aria-label={`Cancella ${patient.name}`} onClick={() => removePatient(patient)}>×</button></div>)}</div><button className="outline-button" onClick={() => setPatientManagerOpen(true)}>Gestisci pazienti <span>→</span></button></div><div className="quote-card"><span className="quote-mark">“</span><p>La cura comincia dal tempo che scegli di dedicare.</p><small>Nota per oggi</small></div></div>
           </section>
@@ -346,7 +356,7 @@ export default function Home() {
       </main>
       {isPatientManagerOpen && <PatientManager patients={patientList} onClose={() => setPatientManagerOpen(false)} onNew={() => openPatientForm()} onEdit={openPatientForm} onDelete={removePatient} />}
       {isPatientFormOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPatientFormOpen(false); }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="patient-form-title"><div className="modal-heading"><div><p className="eyebrow">{editingPatient ? "MODIFICA CONTATTO" : "NUOVO CONTATTO"}</p><h2 id="patient-form-title">{editingPatient ? "Modifica paziente" : "Aggiungi paziente"}</h2></div><button className="close-button" aria-label="Chiudi" onClick={() => setPatientFormOpen(false)}>×</button></div><form action={savePatient} className="patient-form"><label>Nome<input name="firstName" defaultValue={editingPatient?.name.split(" ")[0]} placeholder="Es. Sofia" autoFocus /></label><label>Cognome<input name="lastName" defaultValue={editingPatient?.name.split(" ").slice(1).join(" ")} placeholder="Es. Bianchi" /></label><label>Telefono <span>(facoltativo)</span><input name="phone" type="tel" defaultValue={editingPatient?.phone} placeholder="+39 333 000 0000" /></label><label>Email <span>(facoltativa)</span><input name="email" type="email" defaultValue={editingPatient?.email} placeholder="nome@email.it" /></label><label className="consent-option"><input name="emailConsent" type="checkbox" defaultChecked={editingPatient?.emailConsent} /> Consenso promemoria email</label><label className="consent-option"><input name="whatsappConsent" type="checkbox" defaultChecked={editingPatient?.whatsappConsent} /> Consenso promemoria WhatsApp</label>{formError && <p className="form-error">{formError}</p>}<div className="modal-actions"><button type="button" className="cancel-button" onClick={() => setPatientFormOpen(false)}>Annulla</button><button type="submit" className="primary-button">{editingPatient ? "Salva modifiche" : "Salva paziente"}</button></div></form><p className="demo-disclaimer">I consensi vengono registrati, ma i promemoria non sono ancora attivi.</p></section></div>}
-      {isAppointmentFormOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setAppointmentFormOpen(false); }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="appointment-form-title"><div className="modal-heading"><div><p className="eyebrow">AGENDA</p><h2 id="appointment-form-title">{editingAppointment ? "Modifica appuntamento" : "Nuovo appuntamento"}</h2></div><button className="close-button" aria-label="Chiudi" onClick={() => setAppointmentFormOpen(false)}>×</button></div><form onSubmit={(event) => { event.preventDefault(); void saveAppointment(new FormData(event.currentTarget)); }} className="patient-form"><label>Giorno<select name="day" value={appointmentDraft.day} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, day: event.target.value }))}><option value="18">Mercoledi 18</option><option value="19">Giovedi 19</option><option value="20">Venerdi 20</option><option value="21">Sabato 21</option><option value="22">Domenica 22</option></select></label><label>Paziente<select name="patient" value={appointmentDraft.patient} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, patient: event.target.value }))}><option value="">Seleziona un paziente</option>{patientList.map((patient) => <option value={patient.name} key={patient.name}>{patient.name}</option>)}</select></label><label>Orario<input name="time" type="time" value={appointmentDraft.time} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, time: event.target.value }))} /></label><label>Tipo di appuntamento<select name="type" value={appointmentDraft.type} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, type: event.target.value }))}><option>Colloquio individuale</option><option>Prima consultazione</option><option>Follow-up</option><option>Colloquio con piu persone</option></select></label>{appointmentError && <p className="form-error">{appointmentError}</p>}{appointmentError.includes("sovrapposizione") && <label className="consent-option"><input name="allowOverlap" type="checkbox" checked={allowAppointmentOverlap} onChange={(event) => setAllowAppointmentOverlap(event.target.checked)} /> Confermo la sovrapposizione: colloquio con piu persone</label>}<div className="modal-actions"><button type="button" className="cancel-button" onClick={() => setAppointmentFormOpen(false)}>Annulla</button><button type="submit" className="primary-button">{editingAppointment ? "Salva modifiche" : "Salva appuntamento"}</button></div></form><p className="demo-disclaimer">Appuntamenti demo salvati nel browser per questa prova.</p></section></div>}
+      {isAppointmentFormOpen && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setAppointmentFormOpen(false); }}><section className="modal" role="dialog" aria-modal="true" aria-labelledby="appointment-form-title"><div className="modal-heading"><div><p className="eyebrow">AGENDA</p><h2 id="appointment-form-title">{editingAppointment ? "Modifica appuntamento" : "Nuovo appuntamento"}</h2></div><button className="close-button" aria-label="Chiudi" onClick={() => setAppointmentFormOpen(false)}>×</button></div><form onSubmit={(event) => { event.preventDefault(); void saveAppointment(new FormData(event.currentTarget)); }} className="patient-form"><label>Giorno<select name="day" value={appointmentDraft.day} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, day: event.target.value }))}><option value="18">Mercoledi 18</option><option value="19">Giovedi 19</option><option value="20">Venerdi 20</option><option value="21">Sabato 21</option><option value="22">Domenica 22</option></select></label><label>Paziente<select name="patient" value={appointmentDraft.patient} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, patient: event.target.value }))}><option value="">Seleziona un paziente</option>{patientList.map((patient) => <option value={patient.name} key={patient.name}>{patient.name}</option>)}</select></label><label>Orario<input name="time" type="time" value={appointmentDraft.time} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, time: event.target.value }))} /></label><label>Modalita<select name="modality" value={appointmentDraft.modality} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, modality: event.target.value as "In presenza" | "Online" }))}><option>In presenza</option><option>Online</option></select></label><label>Tipo di appuntamento<select name="type" value={appointmentDraft.type} onChange={(event) => setAppointmentDraft((draft) => ({ ...draft, type: event.target.value }))}><option>Colloquio individuale</option><option>Prima consultazione</option><option>Follow-up</option><option>Colloquio con piu persone</option></select></label>{appointmentError && <p className="form-error">{appointmentError}</p>}{appointmentError.includes("sovrapposizione") && <label className="consent-option"><input name="allowOverlap" type="checkbox" checked={allowAppointmentOverlap} onChange={(event) => setAllowAppointmentOverlap(event.target.checked)} /> Confermo la sovrapposizione: colloquio con piu persone</label>}<div className="modal-actions"><button type="button" className="cancel-button" onClick={() => setAppointmentFormOpen(false)}>Annulla</button><button type="submit" className="primary-button">{editingAppointment ? "Salva modifiche" : "Salva appuntamento"}</button></div></form><p className="demo-disclaimer">Appuntamenti demo salvati nel browser per questa prova.</p></section></div>}
     </div>
   );
 }

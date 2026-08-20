@@ -29,6 +29,7 @@ model Appointment {
   id        String   @id @default(cuid())
   startsAt  DateTime
   type      String
+  modality  String   @default("In presenza")
   status    String   @default("Da confermare")
   patientId String
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)

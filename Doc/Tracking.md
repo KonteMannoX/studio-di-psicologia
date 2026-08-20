@@ -151,6 +151,13 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - La vista Calendario mostra i giorni della settimana, il conteggio giornaliero e tutti gli appuntamenti del giorno selezionato.
 - Collegate alla vista Calendario le azioni esistenti di nuovo, modifica e cancellazione appuntamento.
 - Verificati ESLint, controllo errori e build dopo il Calendario con esito positivo.
+- Rilevato che i contatori "2 in presenza · 2 online" erano valori demo fissi.
+- Aggiunta al modello appuntamento la modalità `In presenza` o `Online`, con default `In presenza` per i record esistenti.
+- Applicata a Supabase la modifica dello schema con `prisma db push` e aggiunta la migrazione SQL PostgreSQL documentale `20260820153000_add_appointment_modality`.
+- Aggiunta al form appuntamento la scelta della modalità, mantenuta in creazione e modifica.
+- Resi dinamici i contatori del riepilogo: mostrano gli appuntamenti del giorno selezionato divisi per modalità.
+- Mostrata la modalità anche nell'elenco degli appuntamenti.
+- Verificati Prisma generate, ESLint e build dopo la modifica con esito positivo.
 
 ## Stato attuale
 

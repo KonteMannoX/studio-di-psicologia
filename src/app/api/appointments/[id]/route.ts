@@ -13,6 +13,7 @@ export async function PUT(request: Request, context: RouteContext) {
   });
   const day = typeof body.day === "string" ? body.day : "";
   const time = typeof body.time === "string" ? body.time : "";
+  const modality = body.modality === "Online" ? "Online" : "In presenza";
 
   if (!patient || !day || !time) {
     return NextResponse.json({ error: "Paziente, giorno e orario sono obbligatori." }, { status: 400 });
@@ -29,6 +30,7 @@ export async function PUT(request: Request, context: RouteContext) {
     data: {
       startsAt,
       type: typeof body.type === "string" ? body.type : "Colloquio individuale",
+      modality,
       patientId: patient.id,
     },
     include: { patient: true },
@@ -40,6 +42,7 @@ export async function PUT(request: Request, context: RouteContext) {
     time: appointment.startsAt.toISOString().slice(11, 16),
     name: `${appointment.patient.firstName} ${appointment.patient.lastName}`,
     type: appointment.type,
+    modality: appointment.modality,
     color: "amber",
     status: appointment.status,
   });
