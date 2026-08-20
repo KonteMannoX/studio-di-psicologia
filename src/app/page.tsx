@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { normalizePersonName } from "@/lib/text";
+import { normalizeEmail, normalizePersonName } from "@/lib/text";
 
 type Appointment = {
   id: string;
@@ -197,7 +197,7 @@ export default function Home() {
       name,
       detail: editingPatient?.detail ?? "Nuovo paziente",
       color: editingPatient?.color ?? "amber",
-      email: String(formData.get("email") || "").trim(),
+      email: normalizeEmail(String(formData.get("email") || "")),
       phone: String(formData.get("phone") || "").trim(),
       emailConsent: formData.get("emailConsent") === "on",
       whatsappConsent: formData.get("whatsappConsent") === "on",

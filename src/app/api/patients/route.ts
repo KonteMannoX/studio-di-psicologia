@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { normalizePersonName } from "@/lib/text";
+import { normalizeEmail, normalizePersonName } from "@/lib/text";
 
 export async function GET() {
   const patients = await prisma.patient.findMany({
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const normalizedEmail = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const normalizedEmail = typeof body.email === "string" ? normalizeEmail(body.email) : "";
   const normalizedPhone = typeof body.phone === "string" ? body.phone.trim() : "";
   const duplicate = await prisma.patient.findFirst({
     where: {

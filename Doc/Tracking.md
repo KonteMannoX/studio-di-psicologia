@@ -139,6 +139,9 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Verificati ESLint e build dopo la correzione del modulo con esito positivo.
 - Corretto anche il reset della select paziente dopo il warning: il modulo appuntamenti usa ora `onSubmit` con `preventDefault` invece della form action automatica.
 - Verificati nuovamente ESLint e build dopo la correzione con esito positivo.
+- Scelto di normalizzare sempre le email in minuscolo per coerenza, ricerca e prevenzione di duplicati apparenti.
+- Applicata la normalizzazione email sia alla creazione sia alla modifica dei pazienti, tramite API e UI.
+- Verificati ESLint e build dopo la normalizzazione email con esito positivo.
 
 ## Stato attuale
 

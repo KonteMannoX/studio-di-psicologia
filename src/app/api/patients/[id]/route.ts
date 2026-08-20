@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { normalizePersonName } from "@/lib/text";
+import { normalizeEmail, normalizePersonName } from "@/lib/text";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -20,7 +20,7 @@ export async function PUT(request: Request, context: RouteContext) {
       firstName,
       lastName,
       phone: typeof body.phone === "string" ? body.phone.trim() || null : null,
-      email: typeof body.email === "string" ? body.email.trim() || null : null,
+      email: typeof body.email === "string" ? normalizeEmail(body.email) || null : null,
       emailConsent: body.emailConsent === true,
       whatsappConsent: body.whatsappConsent === true,
     },
