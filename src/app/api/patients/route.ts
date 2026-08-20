@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizePersonName } from "@/lib/text";
 
 export async function GET() {
   const patients = await prisma.patient.findMany({
@@ -11,8 +12,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
-  const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
+  const firstName = typeof body.firstName === "string" ? normalizePersonName(body.firstName) : "";
+  const lastName = typeof body.lastName === "string" ? normalizePersonName(body.lastName) : "";
 
   if (!firstName || !lastName) {
     return NextResponse.json(

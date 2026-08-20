@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { normalizePersonName } from "@/lib/text";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 export async function PUT(request: Request, context: RouteContext) {
   const { id } = await context.params;
   const body = await request.json();
-  const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
-  const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
+  const firstName = typeof body.firstName === "string" ? normalizePersonName(body.firstName) : "";
+  const lastName = typeof body.lastName === "string" ? normalizePersonName(body.lastName) : "";
 
   if (!firstName || !lastName) {
     return NextResponse.json({ error: "Nome e cognome sono obbligatori." }, { status: 400 });

@@ -131,6 +131,10 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Verificata localmente la build di produzione con generazione Prisma, compilazione Next.js e TypeScript completate con esito positivo.
 - Pubblicato su GitHub il commit `6f0ee55` con la correzione della build Prisma per Vercel.
 - Rilevato che il comando usato per generare l'hash conteneva il segnaposto `LA_TUA_PASSWORD`: prima del deploy va rigenerato usando la password reale scelta dall'utente, senza salvarla nella documentazione.
+- Aggiunta normalizzazione automatica di nome e cognome: ogni parola viene salvata con iniziale maiuscola e lettere successive minuscole, anche tramite API.
+- Aggiunto controllo per impedire appuntamenti allo stesso giorno e orario.
+- Aggiunto warning nel modulo appuntamenti con conferma esplicita per consentire una sovrapposizione, ad esempio per un colloquio con piu persone.
+- Verificati ESLint e build dopo le modifiche con esito positivo; Prisma Client, compilazione Next.js e TypeScript completati senza errori.
 
 ## Stato attuale
 

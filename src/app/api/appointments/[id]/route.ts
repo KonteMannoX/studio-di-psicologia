@@ -18,10 +18,16 @@ export async function PUT(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Paziente, giorno e orario sono obbligatori." }, { status: 400 });
   }
 
+  const startsAt = new Date(`2025-06-${day.padStart(2, "0")}T${time}:00.000Z`);
+  const overlappingAppointment = await prisma.appointment.findFirst({ where: { startsAt, id: { not: id } } });
+  if (overlappingAppointment && body.allowOverlap !== true) {
+    return NextResponse.json({ error: "Esiste gia un appuntamento a questo orario." }, { status: 409 });
+  }
+
   const appointment = await prisma.appointment.update({
     where: { id },
     data: {
-      startsAt: new Date(`2025-06-${day.padStart(2, "0")}T${time}:00.000Z`),
+      startsAt,
       type: typeof body.type === "string" ? body.type : "Colloquio individuale",
       patientId: patient.id,
     },
