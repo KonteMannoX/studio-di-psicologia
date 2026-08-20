@@ -147,6 +147,10 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Aggiornata la schermata di login: sostituito il marchio "Studio calma" con "Studio di Psicologia".
 - Sostituito l'avviso "Prototipo locale" con un promemoria per usare solo dati fittizi fino al completamento della configurazione di sicurezza.
 - Verificati ESLint e build dopo l'aggiornamento del login con esito positivo.
+- Implementata la prima vista Calendario reale, accessibile dal menu principale.
+- La vista Calendario mostra i giorni della settimana, il conteggio giornaliero e tutti gli appuntamenti del giorno selezionato.
+- Collegate alla vista Calendario le azioni esistenti di nuovo, modifica e cancellazione appuntamento.
+- Verificati ESLint, controllo errori e build dopo il Calendario con esito positivo.
 
 ## Stato attuale
 
