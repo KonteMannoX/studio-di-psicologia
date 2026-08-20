@@ -158,6 +158,9 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Resi dinamici i contatori del riepilogo: mostrano gli appuntamenti del giorno selezionato divisi per modalità.
 - Mostrata la modalità anche nell'elenco degli appuntamenti.
 - Verificati Prisma generate, ESLint e build dopo la modifica con esito positivo.
+- Aggiunta icona compatta per la modalità appuntamento: `⌖` per In presenza e `▣` per Online.
+- Mostrata l'icona con etichetta testuale e tooltip sia nella Panoramica sia nel Calendario, senza affidarsi solo al colore.
+- Verificati ESLint e build dopo le icone modalità con esito positivo.
 
 ## Stato attuale
 
