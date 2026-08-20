@@ -142,6 +142,8 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Scelto di normalizzare sempre le email in minuscolo per coerenza, ricerca e prevenzione di duplicati apparenti.
 - Applicata la normalizzazione email sia alla creazione sia alla modifica dei pazienti, tramite API e UI.
 - Verificati ESLint e build dopo la normalizzazione email con esito positivo.
+- Test desktop completato dall'utente: gestione pazienti, appuntamenti e normalizzazione email risultano corrette.
+- Prossimo test: verificare l'app dal link Vercel su Android e iOS, inclusi login, inserimento/modifica pazienti, calendario, sovrapposizioni e usabilita su schermo piccolo.
 
 ## Stato attuale
 
