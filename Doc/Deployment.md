@@ -17,7 +17,7 @@ Rendere Studio di Psicologia accessibile da PC, Android e iOS mantenendo un data
 3. Aggiornare Prisma da SQLite a PostgreSQL.
 4. Applicare lo schema sul database remoto.
 5. Configurare `DATABASE_URL` come variabile segreta locale e Vercel.
-6. Eseguire la build e verificare pazienti/appuntamenti da PC e telefono.
+6. Eseguire la build (che genera automaticamente il client Prisma) e verificare pazienti/appuntamenti da PC e telefono.
 7. Pubblicare su Vercel con HTTPS.
 8. Configurare dominio, backup, accessi e policy di conservazione.
 
@@ -29,6 +29,7 @@ Rendere Studio di Psicologia accessibile da PC, Android e iOS mantenendo un data
 - Nessun repository remoto GitHub ancora collegato.
 - Repository remoto configurato: `https://github.com/KonteMannoX/studio-di-psicologia.git`.
 - Il primo commit e il push sono ancora da eseguire.
+- Lo script `build` esegue prima `prisma generate`, necessario perché `src/generated/prisma` e esclusa da Git e viene ricreata durante il deploy Vercel.
 
 ## Variabili necessarie
 
@@ -36,6 +37,7 @@ Da impostare solo negli environment variables locali/Vercel, mai nel repository:
 
 ```text
 DATABASE_URL
+DIRECT_URL
 AUTH_SECRET
 STUDIO_LOGIN_EMAIL
 STUDIO_PASSWORD_HASH
@@ -43,7 +45,7 @@ STUDIO_PASSWORD_HASH
 
 ## Stato
 
-Le variabili `DATABASE_URL` e `DIRECT_URL` sono state configurate in `.env.local`. Prisma CLI usa `DIRECT_URL`; l'app usa `DATABASE_URL`. Lo schema e stato applicato al progetto Supabase con `prisma db push`. L'API pazienti risponde correttamente dal database remoto. I dati presenti sono ancora dati di prova; non inserire dati reali durante questa fase.
+Le variabili `DATABASE_URL` e `DIRECT_URL` sono state configurate in `.env.local`. Prisma CLI usa `DIRECT_URL`; l'app usa `DATABASE_URL`. Entrambe devono essere presenti anche nell'ambiente Vercel che verra pubblicato. Lo schema e stato applicato al progetto Supabase con `prisma db push`. L'API pazienti risponde correttamente dal database remoto. Le variabili di autenticazione da configurare su Vercel sono `AUTH_SECRET`, `STUDIO_LOGIN_EMAIL` e `STUDIO_PASSWORD_HASH`; l'hash della password e stato generato localmente e inserito su Vercel. Il prossimo passo e avviare il deploy. I dati presenti sono ancora dati di prova; non inserire dati reali durante questa fase.
 
 ## Nota sicurezza
 

@@ -123,14 +123,20 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Aggiornati marchio UI, titolo pagina, descrizione metadata e documentazione di pubblicazione.
 - Scelto percorso di pubblicazione `Supabase PostgreSQL + Vercel` per la sincronizzazione tra dispositivi.
 - Creato `Doc/Deployment.md` con procedura e variabili necessarie.
+- Configurate su Vercel le variabili necessarie per il deploy, incluse `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `STUDIO_LOGIN_EMAIL` e `STUDIO_PASSWORD_HASH`.
+- Generato localmente l'hash bcrypt della password dello studio e inserito in Vercel come `STUDIO_PASSWORD_HASH`.
+- Pronto ad avviare il deploy su Vercel; dopo la pubblicazione verificare build, login e accesso ai dati demo.
+- Risolto errore di deploy Vercel: il client Prisma generato non era presente nel repository perche escluso da Git.
+- Aggiornato lo script `build` in `package.json` a `prisma generate && next build`.
+- Verificata localmente la build di produzione con generazione Prisma, compilazione Next.js e TypeScript completate con esito positivo.
 
 ## Stato attuale
 
 Dashboard demo disponibile in locale. La cartella `C:\Users\lucap\StudioApp` precedente e stata eliminata; il progetto si trova in `C:\Users\lucap\studio-app`.
 
-Il database Supabase PostgreSQL e collegato alla UI per pazienti e appuntamenti. La dashboard richiede ora autenticazione locale. Le chiavi delle liste sono basate sugli ID database. La UI ricade su `localStorage` se il server non risponde. Le credenziali e il segreto in `.env.local` sono solo da demo e vanno sostituiti prima di qualsiasi uso reale.
+Il database Supabase PostgreSQL e collegato alla UI per pazienti e appuntamenti. La dashboard richiede autenticazione. Le chiavi delle liste sono basate sugli ID database. La UI ricade su `localStorage` se il server non risponde. Le variabili locali e Vercel sono state configurate per il deploy, compresi `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `STUDIO_LOGIN_EMAIL` e `STUDIO_PASSWORD_HASH`. Le credenziali e il segreto sono ancora da considerare demo e vanno sostituiti o rafforzati prima di qualsiasi uso reale.
 
-La build di produzione e stata avviata, ma il terminale non ha restituito un esito finale completo; va ripetuta prima della prima funzionalita.
+Il deploy Vercel non e ancora stato avviato; dopo il deploy verificare l'esito della build e il funzionamento di login, pazienti e appuntamenti.
 
 Su Windows questa installazione blocca il wrapper `npm.ps1` per la Execution Policy. Usare `npm.cmd` oppure il percorso completo del progetto, ad esempio `npm.cmd --prefix C:\Users\lucap\studio-app run build`.
 
