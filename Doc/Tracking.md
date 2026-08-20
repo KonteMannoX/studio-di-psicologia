@@ -129,6 +129,8 @@ Applicazione web responsive per la gestione degli appuntamenti di uno studio di 
 - Risolto errore di deploy Vercel: il client Prisma generato non era presente nel repository perche escluso da Git.
 - Aggiornato lo script `build` in `package.json` a `prisma generate && next build`.
 - Verificata localmente la build di produzione con generazione Prisma, compilazione Next.js e TypeScript completate con esito positivo.
+- Pubblicato su GitHub il commit `6f0ee55` con la correzione della build Prisma per Vercel.
+- Rilevato che il comando usato per generare l'hash conteneva il segnaposto `LA_TUA_PASSWORD`: prima del deploy va rigenerato usando la password reale scelta dall'utente, senza salvarla nella documentazione.
 
 ## Stato attuale
 

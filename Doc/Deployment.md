@@ -30,6 +30,7 @@ Rendere Studio di Psicologia accessibile da PC, Android e iOS mantenendo un data
 - Repository remoto configurato: `https://github.com/KonteMannoX/studio-di-psicologia.git`.
 - Il primo commit e il push sono ancora da eseguire.
 - Lo script `build` esegue prima `prisma generate`, necessario perché `src/generated/prisma` e esclusa da Git e viene ricreata durante il deploy Vercel.
+- Il commit `6f0ee55` con la correzione della build e stato pubblicato su GitHub. Se Vercel non avvia automaticamente il deploy, usare `Deployments > Redeploy` sul commit piu recente.
 
 ## Variabili necessarie
 
@@ -50,3 +51,5 @@ Le variabili `DATABASE_URL` e `DIRECT_URL` sono state configurate in `.env.local
 ## Nota sicurezza
 
 La connection string e i segreti non devono essere condivisi in chat, commit o screenshot. Prima dell'uso professionale servono autenticazione piu robusta, backup, controllo accessi e valutazione GDPR.
+
+L'hash bcrypt deve essere generato usando la password reale scelta per lo studio. Non usare il testo di esempio `LA_TUA_PASSWORD` come password effettiva.
